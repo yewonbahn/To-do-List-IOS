@@ -12,8 +12,16 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "TO DO LIST"
+        
+        let item = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTodo))
+        item.tintColor = .black
+        
+        navigationItem.rightBarButtonItem = item
     }
 
-
+    @objc func addNewTodo()
+    {
+        
+        
+    }
 }
-
