@@ -6,10 +6,14 @@
 //
 
 import UIKit
-
+import CoreData
 class ViewController: UIViewController {
 
     @IBOutlet weak var todoTableView: UITableView!
+    
+    let appdelegate = UIApplication.shared.delegate as! AppDelegate
+    
+    var todoList = [TodoList]()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "TO DO LIST"
@@ -17,6 +21,24 @@ class ViewController: UIViewController {
         
         todoTableView.delegate = self
         todoTableView.dataSource = self
+        
+        fetchData()
+        todoTableView.reloadData()
+        //data 가져오면 보통 reload함.
+        
+    }
+    //core data 로써 local database에서 가져와야함.
+    func fetchData(){
+        let fetchRequest : NSFetchRequest<TodoList> = TodoList.fetchRequest()
+        let context = appdelegate.persistentContainer.viewContext
+        do{
+            self.todoList = try context.fetch(fetchRequest)
+        }
+        catch{
+            print(error)
+        }
+     
+        
     }
     func makeNavigationBar(){
         let item = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTodo))
@@ -40,12 +62,22 @@ class ViewController: UIViewController {
 }
 extension ViewController : UITableViewDelegate, UITableViewDataSource{
 func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 1
+    return self.todoList.count
 }
 
 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "TodoCell", for: indexPath)
-    
+    let cell = tableView.dequeueReusableCell(withIdentifier: "TodoCell", for: indexPath) as! TodoCell
+    cell.topTitleLabel.text = todoList[indexPath.row].title
+    if let hasData = todoList[indexPath.row].date{
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd hh:mm:ss"
+        let dateString = formatter.string(from: hasData)
+        cell.dateLabel.text = dateString
+    }else{
+        cell.dateLabel.text = ""
+    }
+
+   
     return cell;
 }
 
