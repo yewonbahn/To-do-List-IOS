@@ -84,3 +84,10 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> U
 }
 
 
+extension ViewController:TodoDetailViewControllerDelegate{
+    func didFinishSaveData() {
+        self.todoTableView.reloadData()
+    }
+    
+    
+}

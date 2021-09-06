@@ -8,7 +8,13 @@
 import UIKit
 import CoreData
 
+protocol TodoDetailViewControllerDelegate:AnyObject {
+    func didFinishSaveData()
+    
+}
+
 class TodoDetailViewController: UIViewController {
+    weak var delegate : TodoDetailViewControllerDelegate?
     @IBOutlet weak var highButton: UIButton!
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var normalButton: UIButton!
@@ -39,8 +45,17 @@ class TodoDetailViewController: UIViewController {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         guard let entityDescription = NSEntityDescription.entity(forEntityName: "Todolist", in: context) else{return}
         
-       guard let object = NSManagedObject(entity: entityDescription, insertInto: context) as? TodoList else{return}
+       guard let object = NSManagedObject(entity: entityDescription, insertInto: context) as? TodoList else{return
         
+       }
+        object.title = titleTextField.text
+        object.date = Date()
+        object.uuid = UUID()
+        let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
+        appDelegate.saveContext()
+        delegate?.didFinishSaveData()
+        
+        self.dismiss(animated: true)
         
         
         
