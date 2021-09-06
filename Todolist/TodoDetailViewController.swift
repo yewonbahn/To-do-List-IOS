@@ -43,16 +43,29 @@ class TodoDetailViewController: UIViewController {
 
         // Do any additional setup after loading the view.
     }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        lowButton.layer.cornerRadius = lowButton.bounds.height / 2
+        normalButton.layer.cornerRadius = normalButton.bounds.height / 2
+        highButton.layer.cornerRadius = highButton.bounds.height / 2
+    }
     @IBAction func setPriority(_ sender: UIButton) {
+        lowButton.backgroundColor = .clear
+        normalButton.backgroundColor = .clear
+        highButton.backgroundColor = .clear
+        
         switch sender.tag {
         case 1:
             priority = .level1
+            lowButton.backgroundColor = priority?.color
         
         case 2:
             priority = .level2
+            normalButton.backgroundColor = priority?.color
            
         case 3:
             priority = .level3
+            highButton.backgroundColor = priority?.color
    
             
         default:

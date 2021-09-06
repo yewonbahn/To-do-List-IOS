@@ -83,7 +83,8 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> U
     
     let priorityColor = PriorityLevel(rawValue: priority)?.color
     cell.priorityView.backgroundColor = priorityColor
-
+    cell.priorityView.layer.cornerRadius = cell.priorityView.bounds.height / 2
+    
    
     return cell;
 }
