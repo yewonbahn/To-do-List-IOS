@@ -8,7 +8,25 @@
 import UIKit
 import CoreData
 
-protocol TodoDetailViewControllerDelegate:AnyObject {
+enum PriorityLevel: Int64 {
+    case level1
+    case level2
+    case level3
+}
+extension PriorityLevel {
+    var color: UIColor{
+        switch self
+        {
+        case.level1:
+            return .green
+        case.level2:
+            return .orange
+        case.level3:
+            return .red
+        }
+    }
+}
+protocol TodoDetailViewControllerDelegate:  AnyObject {
     func didFinishSaveData()
     
 }
@@ -19,7 +37,7 @@ class TodoDetailViewController: UIViewController {
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var normalButton: UIButton!
     @IBOutlet weak var lowButton: UIButton!
-    
+    var priority: PriorityLevel?
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,11 +46,14 @@ class TodoDetailViewController: UIViewController {
     @IBAction func setPriority(_ sender: UIButton) {
         switch sender.tag {
         case 1:
-            break
+            priority = .level1
+        
         case 2:
-            break
+            priority = .level2
+           
         case 3:
-            break
+            priority = .level3
+   
             
         default:
             break
@@ -42,19 +63,24 @@ class TodoDetailViewController: UIViewController {
     
 
     @IBAction func saveTodo(_ sender: Any) {
+ 
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        guard let entityDescription = NSEntityDescription.entity(forEntityName: "Todolist", in: context) else{return}
-        
-       guard let object = NSManagedObject(entity: entityDescription, insertInto: context) as? TodoList else{return
-        
+        guard let entityDescription = NSEntityDescription.entity(forEntityName: "TodoList", in: context) else{ return }
+         
+       guard let object = NSManagedObject(entity: entityDescription,
+            insertInto: context) as? TodoList else{
+        return
        }
+  
         object.title = titleTextField.text
         object.date = Date()
         object.uuid = UUID()
+        object.prioritylevel = priority?.rawValue ?? PriorityLevel.level1.rawValue
+        print(titleTextField.text ?? "zz")
         let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
         appDelegate.saveContext()
-        delegate?.didFinishSaveData()
         
+        delegate?.didFinishSaveData()
         self.dismiss(animated: true)
         
         

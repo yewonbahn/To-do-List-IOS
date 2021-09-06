@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+
 class ViewController: UIViewController {
 
     @IBOutlet weak var todoTableView: UITableView!
@@ -56,7 +57,9 @@ class ViewController: UIViewController {
 
     @objc func addNewTodo()
     {
-        
+        let detailVC = TodoDetailViewController.init(nibName: "TodoDetailViewController", bundle: nil)
+        detailVC.delegate = self
+        self.present(detailVC, animated: true, completion: nil)
         
     }
 }
@@ -76,6 +79,10 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> U
     }else{
         cell.dateLabel.text = ""
     }
+    let priority = todoList[indexPath.row].prioritylevel
+    
+    let priorityColor = PriorityLevel(rawValue: priority)?.color
+    cell.priorityView.backgroundColor = priorityColor
 
    
     return cell;
@@ -84,8 +91,9 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> U
 }
 
 
-extension ViewController:TodoDetailViewControllerDelegate{
+extension ViewController: TodoDetailViewControllerDelegate{
     func didFinishSaveData() {
+        self.fetchData()
         self.todoTableView.reloadData()
     }
     
